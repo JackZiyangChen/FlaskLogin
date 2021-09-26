@@ -2,5 +2,20 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<h1>Welcome to the <b>login</b> page</h1>
+<form method="POST">
+    <br>
+    <h3 align="center">Login</h3>
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email"/>
+    </div>
+    <div class="form-group">
+        <label for="password">password Name</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password"/>
+    </div>
+    <br>
+    <div class="d-flex justify-content-center align-items-center">
+        <button type="submit" class="btn btn-primary">LOGIN</button>
+    </div>
+</form>
 {% endblock %}
