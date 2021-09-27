@@ -25,6 +25,29 @@
                 </div>
             </div>
         </nav>
+
+        <!--initiate flash message-->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for c, m in messages %}
+                {% if c == 'error' %}
+                    <div class="alert alert-dismissable alert-danger fade show" role="alert">
+                        {{ m }}
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="alert alert-dismissable alert-success fade show" role="alert">
+                        {{ m }}
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {%endif%}
+        {% endwith %}
         <!--Dynamic div so that specific content can be load based on different pages-->
         <div class="container">
             {% block content %}
