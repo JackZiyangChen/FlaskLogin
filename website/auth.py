@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
+from flask_login import login_user, login_required, logout_user, current_user
 
 
 
@@ -10,12 +11,30 @@ auth = Blueprint('auth', __name__) #initialize authentication blueprint
 @auth.route('/login',methods=['GET','POST'])
 def login():  # handles login operation
     data = request.form  # contains form data collected when a post request is generated
+    if request.method == 'POST':
+        email = data.get('email')
+        password = data.get('password')
+
+        user = User.query.filter_by(email=email).first() # SELECT * from User where email like ?
+        if user:
+            if check_password_hash(user.password,password):
+                flash('Login successfully!',category='success')
+                login_user(user, remember=True)
+
+                return redirect(url_for('views.home'))
+            else:
+                flash('Password Incorrect!',category='error')
+        else:
+            flash('user does not exist!',category='error')
+
     return render_template("login.html")  # NOTE: variable can be passed through method parameter
 
 
 @auth.route('/logout')
-def logout(): #handles logout operation
-    return '<p>You have been logged out</p>'
+@login_required
+def logout(): # handles logout operation
+    logout_user()
+    return redirect(url_for('auth.login'))
 
 
 @auth.route('/sign-up', methods=['GET','POST'])
@@ -28,8 +47,12 @@ def signup():  # handles sign up operation
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
+        user = User.query.filter_by(email=email).first()
+
         if len(email)<4:  # ensure email input is a valid email
             flash('you must have a valid email', category='error')
+        elif user:
+            flash('User already exist!', category='error')
         elif len(firstName)<2:  # ensure first name is greater than 2 characters
             flash('you must enter a valid first name', category='error')
         elif password1 != password2: # ensure that password confirmation is valid
@@ -44,6 +67,7 @@ def signup():  # handles sign up operation
             new_user = User(email=email, first_name=firstName, last_name=lastName, password=generate_password_hash(password=password1, method='sha256' )) # note: password is hashed through SHA256 algorithm
             db.session.add(new_user)
             db.session.commit()
+            login_user(new_user,remember=True)
 
             # redirect user to home
             flash('successfully created an account', category='success')
