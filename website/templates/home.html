@@ -2,5 +2,18 @@
 {% block title %}home{% endblock %}
 
 {% block content %}
-<h1>Welcome to the <b>home</b> page</h1>
+<h1 align="center">Notes</h1>
+<ul class="list-group list-group-flush" style="height:350px;overflow-y:scroll" id="notes">
+    {% for note in user.notes%}
+    <li class="list-group-item"><div style="width: 500px">{{ note.data }}</div>
+        <span style="float:right">{{ note.date }}</span></li>
+    {% endfor %}
+</ul>
+<form method="post">
+    <textarea name="note" id="note" class="form-control"></textarea>
+    <br>
+    <div align="center">
+        <button type="submit" class="btn btn-primary">Add Note</button>
+    </div>
+</form>
 {% endblock %}

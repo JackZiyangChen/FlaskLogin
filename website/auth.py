@@ -27,7 +27,7 @@ def login():  # handles login operation
         else:
             flash('user does not exist!',category='error')
 
-    return render_template("login.html")  # NOTE: variable can be passed through method parameter
+    return render_template("login.html", user=current_user)  # NOTE: variable can be passed through method parameter
 
 
 @auth.route('/logout')
@@ -73,6 +73,4 @@ def signup():  # handles sign up operation
             flash('successfully created an account', category='success')
             return redirect(url_for('views.home'))
 
-
-
-    return render_template("signup.html")
+    return render_template("signup.html", user=current_user)
